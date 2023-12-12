@@ -5,6 +5,12 @@ aws_access_key_id = AKIA6EPEBOQVP6QBDGW4
 aws_secret_access_key = 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
 */
 
+/*
+[default]
+aws_access_key_id = AKIA6EPEBOQVP6QBDGW4
+aws_secret_access_key = Oo7+FZ1ku1zu9s2/jGAyLUcrRyg2MPK/zD5r+9Us
+*/
+
 provider "aws" {
   region = "us-east-2" # Set your desired AWS region
   access_key = "AKIA6EPEBOQVP6QBDGW4"
