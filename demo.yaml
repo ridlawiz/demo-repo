@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:1.0.0
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          value: "AKIA6EPEBOQVP6QBDGW4"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "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"
+        - name: MYSQL_URL
+          value: "mysql://username:password@mysql-host:3306/database"
