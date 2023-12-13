@@ -1,5 +1,5 @@
-#[default]
-#aws_access_key_id = AKIA6EPEBOQVP6QBDGW4
-#aws_secret_access_key = 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
 
-#Just testing if the secret in this file will be detected.
+aws_access_key_id = AKIA6EPEBOQVP6QBDGW4
+aws_secret_access_key = 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
+
+Please note that this is just for testing purposes, to see if the secret in this file will be detected. This secret is not active and has been deleted.
