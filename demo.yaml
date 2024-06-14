@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-app
-        image: my-app:1.0.0
+        image: my-app:2.0.0
         env:
         - name: AWS_ACCESS_KEY_ID
           value: "AKIA6EPEBOQVP6QBDGW4"
