@@ -1,3 +1,4 @@
+
 provider "aws" {
   region = "us-east-2" # Set your desired AWS region
   access_key = "AKIA6EPEBOQVP6QBDGW4"
@@ -30,3 +31,6 @@ resource "aws_security_group" "example" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+
+
