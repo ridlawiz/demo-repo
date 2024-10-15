@@ -1,4 +1,3 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,5 +22,3 @@ spec:
           value: "Oo7+FZ1ku1zu9s2/jGAyLUcrRyg2MPK/zD5r+9Us"
         - name: MYSQL_URL
           value: "mysql://username:password@mysql-host:3306/database"
-
-# Please note that this is just for testing purposes, to see if the secret in this file will be detected. This secret is not active and has been deleted.
