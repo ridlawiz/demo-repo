@@ -1,0 +1,2076 @@
+{
+ "Description": "Created with forge-jsii",
+ "Transform": [
+  "AWS::Serverless-2016-10-31"
+ ],
+ "Resources": {
+  "RoleSClaimProdExecutionRole": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "events.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Condition": {
+        "Bool": {
+         "aws:MultiFactorAuthPresent": "true"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::238125156143:root"
+          ]
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AWSXRayDaemonWriteAccess"
+       ]
+      ]
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": "logs:*",
+         "Effect": "Allow",
+         "Resource": "arn:aws:logs:*:*:*"
+        },
+        {
+         "Action": "lambda:InvokeFunction",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "cloudwatch:PutMetricData",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "events:PutEvents",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "ssm:GetParametersByPath",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "servicediscovery:DiscoverInstances",
+         "Effect": "Allow",
+         "Resource": "*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "execution-role"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "s3:GetObject*",
+          "s3:ListBucket"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          "arn:aws:s3:::manypets-claims-docs-eu-prod",
+          "arn:aws:s3:::manypets-claims-docs-eu-prod/*"
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "read-objects-in-manypets-claims-docs-eu-prod"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "s3:GetObject*",
+          "s3:ListBucket",
+          "s3:PutObject*",
+          "s3:DeleteObject"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          "arn:aws:s3:::manypets-claims-docs-eu-prod",
+          "arn:aws:s3:::manypets-claims-docs-eu-prod/*"
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "write-objects-in-manypets-claims-docs-eu-prod"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "es:ESHttpHead",
+          "es:ESHttpGet",
+          "es:ESHttpPost",
+          "es:ESHttpPut",
+          "es:ESHttpDelete"
+         ],
+         "Effect": "Allow",
+         "Resource": "arn:aws:es:eu-west-1:181537326646:domain/mongo-clone-prod/*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "es-data-access-mongo-clone-prod"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "es:ESHttpHead",
+          "es:ESHttpGet",
+          "es:ESHttpPost",
+          "es:ESHttpPut",
+          "es:ESHttpDelete"
+         ],
+         "Effect": "Allow",
+         "Resource": "arn:aws:es:eu-west-1:181537326646:domain/mongo-clone-temp-prod/*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "es-data-access-mongo-clone-temp-prod"
+     }
+    ],
+    "RoleName": "s-claim-prod-execution-role",
+    "Tags": [
+     {
+      "Key": "mp:business-unit",
+      "Value": "boughtbymany/domain-claims"
+     },
+     {
+      "Key": "mp:cloudformation-stack-name",
+      "Value": "code-deploy-s-claim-prod"
+     },
+     {
+      "Key": "mp:name",
+      "Value": "s-claim-prod"
+     },
+     {
+      "Key": "mp:owner",
+      "Value": "domain-claim"
+     },
+     {
+      "Key": "mp:service-role",
+      "Value": "service"
+     },
+     {
+      "Key": "mp:stage",
+      "Value": "prod"
+     }
+    ]
+   }
+  },
+  "sclaimprodSClaimProdSClaimProdExecutionRoleDefaultPolicyFB0B4979": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "appconfig:GetLatestConfiguration",
+        "appconfig:StartConfigurationSession"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:appconfig:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":application/",
+          {
+           "Ref": "sclaimprodSClaimProdAppConfigAppClaims12278469"
+          },
+          "/environment/*/configuration/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "sclaimprodSClaimProdSClaimProdExecutionRoleDefaultPolicyFB0B4979",
+    "Roles": [
+     {
+      "Ref": "RoleSClaimProdExecutionRole"
+     }
+    ]
+   }
+  },
+  "ApiLambdaFunction": {
+   "Type": "AWS::Serverless::Function",
+   "Properties": {
+    "CodeUri": "s3://forge-artifacts-prod-eu/service-claim/5d386c85384370ae65a4475def94420c1024b18b/api.zip",
+    "Environment": {
+     "Variables": {
+      "COMMIT_REF": "5d386c85384370ae65a4475def94420c1024b18b",
+      "PACKAGE": "s3://forge-artifacts-prod-eu/service-claim/5d386c85384370ae65a4475def94420c1024b18b/api.zip",
+      "CONFIG_LAMBDA_HANDLER": "app.lambda_handler.handler",
+      "POWERTOOLS_SERVICE_NAME": "s-claim",
+      "AWS_APPCONFIG_EXTENSION_PREFETCH_LIST": "/applications/Essential-Prod/environments/default/configurations/default,/applications/claims/environments/default/configurations/default",
+      "CONFIG_LAMBDA_NAMESPACE": "/claim/sClaim",
+      "ENV": "Bought By Many (Prod)"
+     }
+    },
+    "EventInvokeConfig": {},
+    "FunctionName": "s-claim-prod",
+    "Handler": "essentials.config_handler",
+    "Layers": [
+     "arn:aws:lambda:eu-west-1:491878816636:layer:config:18",
+     "arn:aws:lambda:eu-west-1:434848589818:layer:AWS-AppConfig-Extension:82",
+     "arn:aws:lambda:eu-west-1:580247275435:layer:LambdaInsightsExtension:51"
+    ],
+    "MemorySize": 3008,
+    "Role": {
+     "Fn::GetAtt": [
+      "RoleSClaimProdExecutionRole",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": {
+     "deploy:code_uri": "s3://forge-artifacts-prod-eu/service-claim/5d386c85384370ae65a4475def94420c1024b18b/api.zip",
+     "deploy:date": "2024-10-29T11:47:53.889Z",
+     "deploy:source": "forge-jsii",
+     "mp:business-unit": "boughtbymany/domain-claims",
+     "mp:cloudformation-stack-name": "code-deploy-s-claim-prod",
+     "mp:name": "s-claim-prod",
+     "mp:owner": "domain-claim",
+     "mp:service-role": "service",
+     "mp:stage": "prod"
+    },
+    "Timeout": 30,
+    "Tracing": "Active"
+   }
+  },
+  "ArnAwsIam253373990282RolePioAdminOrchestratorExecutionRoleApiLambdaFunctionInvokePermission": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Ref": "ApiLambdaFunction"
+    },
+    "Principal": "arn:aws:iam::253373990282:role/pio-admin-orchestrator-execution-role"
+   },
+   "DependsOn": [
+    "ApiLambdaFunction"
+   ]
+  },
+  "ArnAwsIam491878816636RoleClaimsOrchProdExecutionRoleApiLambdaFunctionInvokePermission": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Ref": "ApiLambdaFunction"
+    },
+    "Principal": "arn:aws:iam::491878816636:role/claims-orch-prod-execution-role"
+   },
+   "DependsOn": [
+    "ApiLambdaFunction"
+   ]
+  },
+  "KeySClaimProdSettings": {
+   "Type": "AWS::KMS::Key",
+   "Properties": {
+    "EnableKeyRotation": true,
+    "Enabled": true,
+    "KeyPolicy": {
+     "Statement": [
+      {
+       "Action": "kms:*",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::",
+           {
+            "Ref": "AWS::AccountId"
+           },
+           ":root"
+          ]
+         ]
+        }
+       },
+       "Resource": "*",
+       "Sid": "Allow access for root account"
+      },
+      {
+       "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "RoleSClaimProdExecutionRole",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": "*",
+       "Sid": "Allow use of the key to decrypt variables"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "mp:business-unit",
+      "Value": "boughtbymany/domain-claims"
+     },
+     {
+      "Key": "mp:cloudformation-stack-name",
+      "Value": "code-deploy-s-claim-prod"
+     },
+     {
+      "Key": "mp:name",
+      "Value": "s-claim-prod"
+     },
+     {
+      "Key": "mp:owner",
+      "Value": "domain-claim"
+     },
+     {
+      "Key": "mp:service-role",
+      "Value": "service"
+     },
+     {
+      "Key": "mp:stage",
+      "Value": "prod"
+     }
+    ]
+   },
+   "DependsOn": [
+    "sclaimprodSClaimProdSClaimProdExecutionRoleDefaultPolicyFB0B4979",
+    "RoleSClaimProdExecutionRole"
+   ]
+  },
+  "AliasSClaimProdSettings": {
+   "Type": "AWS::KMS::Alias",
+   "Properties": {
+    "AliasName": "alias/s-claim-prod-settings",
+    "TargetKeyId": {
+     "Ref": "KeySClaimProdSettings"
+    }
+   },
+   "DependsOn": [
+    "KeySClaimProdSettings"
+   ]
+  },
+  "RoleSClaimOrgEventBridgeProdExecutionRole": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "events.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Condition": {
+        "Bool": {
+         "aws:MultiFactorAuthPresent": "true"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::238125156143:root"
+          ]
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AWSXRayDaemonWriteAccess"
+       ]
+      ]
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": "logs:*",
+         "Effect": "Allow",
+         "Resource": "arn:aws:logs:*:*:*"
+        },
+        {
+         "Action": "lambda:InvokeFunction",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "cloudwatch:PutMetricData",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "events:PutEvents",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "ssm:GetParametersByPath",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "servicediscovery:DiscoverInstances",
+         "Effect": "Allow",
+         "Resource": "*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "execution-role"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "s3:GetObject*",
+          "s3:ListBucket"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          "arn:aws:s3:::manypets-claims-docs-eu-prod",
+          "arn:aws:s3:::manypets-claims-docs-eu-prod/*"
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "read-objects-in-manypets-claims-docs-eu-prod"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "s3:GetObject*",
+          "s3:ListBucket",
+          "s3:PutObject*",
+          "s3:DeleteObject"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          "arn:aws:s3:::manypets-claims-docs-eu-prod",
+          "arn:aws:s3:::manypets-claims-docs-eu-prod/*"
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "write-objects-in-manypets-claims-docs-eu-prod"
+     }
+    ],
+    "RoleName": "s-claim-org-event-bridge-prod-execution-role",
+    "Tags": [
+     {
+      "Key": "mp:business-unit",
+      "Value": "boughtbymany/domain-claims"
+     },
+     {
+      "Key": "mp:cloudformation-stack-name",
+      "Value": "code-deploy-s-claim-prod"
+     },
+     {
+      "Key": "mp:name",
+      "Value": "s-claim-prod"
+     },
+     {
+      "Key": "mp:owner",
+      "Value": "domain-claim"
+     },
+     {
+      "Key": "mp:service-role",
+      "Value": "service"
+     },
+     {
+      "Key": "mp:stage",
+      "Value": "prod"
+     }
+    ]
+   }
+  },
+  "sclaimprodSClaimProdSClaimOrgEventBridgeProdExecutionRoleDefaultPolicy25E7C697": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "appconfig:GetLatestConfiguration",
+        "appconfig:StartConfigurationSession"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:appconfig:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":application/",
+          {
+           "Ref": "sclaimprodSClaimProdAppConfigAppClaims12278469"
+          },
+          "/environment/*/configuration/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "sclaimprodSClaimProdSClaimOrgEventBridgeProdExecutionRoleDefaultPolicy25E7C697",
+    "Roles": [
+     {
+      "Ref": "RoleSClaimOrgEventBridgeProdExecutionRole"
+     }
+    ]
+   }
+  },
+  "FunctionSClaimOrgEventBridgeProd": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "forge-artifacts-prod-eu",
+     "S3Key": "service-claim/5d386c85384370ae65a4475def94420c1024b18b/event_bridge.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "CONFIG_LAMBDA_HANDLER": "event_bridge.lambda_handler.handler",
+      "POWERTOOLS_SERVICE_NAME": "s-claim-eb",
+      "AWS_APPCONFIG_EXTENSION_PREFETCH_LIST": "/applications/Essential-Prod/environments/default/configurations/default,/applications/claims/environments/default/configurations/default",
+      "CONFIG_LAMBDA_NAMESPACE": "/claim/sClaim",
+      "ENV": "Bought By Many (Prod)"
+     }
+    },
+    "FunctionName": "s-claim-org-event-bridge-prod",
+    "Handler": "essentials.config_handler",
+    "Layers": [
+     "arn:aws:lambda:eu-west-1:491878816636:layer:config:18",
+     "arn:aws:lambda:eu-west-1:434848589818:layer:AWS-AppConfig-Extension:82",
+     "arn:aws:lambda:eu-west-1:580247275435:layer:LambdaInsightsExtension:51"
+    ],
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "RoleSClaimOrgEventBridgeProdExecutionRole",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": [
+     {
+      "Key": "deploy:code_uri",
+      "Value": "s3://forge-artifacts-prod-eu/service-claim/5d386c85384370ae65a4475def94420c1024b18b/event_bridge.zip"
+     },
+     {
+      "Key": "deploy:date",
+      "Value": "2024-10-29T11:47:53.902Z"
+     },
+     {
+      "Key": "deploy:source",
+      "Value": "forge-jsii"
+     },
+     {
+      "Key": "mp:business-unit",
+      "Value": "boughtbymany/domain-claims"
+     },
+     {
+      "Key": "mp:cloudformation-stack-name",
+      "Value": "code-deploy-s-claim-prod"
+     },
+     {
+      "Key": "mp:name",
+      "Value": "s-claim-prod"
+     },
+     {
+      "Key": "mp:owner",
+      "Value": "domain-claim"
+     },
+     {
+      "Key": "mp:service-role",
+      "Value": "service"
+     },
+     {
+      "Key": "mp:stage",
+      "Value": "prod"
+     }
+    ],
+    "Timeout": 300,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   }
+  },
+  "KeySClaimOrgEventBridgeProdSettings": {
+   "Type": "AWS::KMS::Key",
+   "Properties": {
+    "EnableKeyRotation": true,
+    "Enabled": true,
+    "KeyPolicy": {
+     "Statement": [
+      {
+       "Action": "kms:*",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::",
+           {
+            "Ref": "AWS::AccountId"
+           },
+           ":root"
+          ]
+         ]
+        }
+       },
+       "Resource": "*",
+       "Sid": "Allow access for root account"
+      },
+      {
+       "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "RoleSClaimOrgEventBridgeProdExecutionRole",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": "*",
+       "Sid": "Allow use of the key to decrypt variables"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "mp:business-unit",
+      "Value": "boughtbymany/domain-claims"
+     },
+     {
+      "Key": "mp:cloudformation-stack-name",
+      "Value": "code-deploy-s-claim-prod"
+     },
+     {
+      "Key": "mp:name",
+      "Value": "s-claim-prod"
+     },
+     {
+      "Key": "mp:owner",
+      "Value": "domain-claim"
+     },
+     {
+      "Key": "mp:service-role",
+      "Value": "service"
+     },
+     {
+      "Key": "mp:stage",
+      "Value": "prod"
+     }
+    ]
+   },
+   "DependsOn": [
+    "sclaimprodSClaimProdSClaimOrgEventBridgeProdExecutionRoleDefaultPolicy25E7C697",
+    "RoleSClaimOrgEventBridgeProdExecutionRole"
+   ]
+  },
+  "AliasSClaimOrgEventBridgeProdSettings": {
+   "Type": "AWS::KMS::Alias",
+   "Properties": {
+    "AliasName": "alias/s-claim-org-event-bridge-prod-settings",
+    "TargetKeyId": {
+     "Ref": "KeySClaimOrgEventBridgeProdSettings"
+    }
+   },
+   "DependsOn": [
+    "KeySClaimOrgEventBridgeProdSettings"
+   ]
+  },
+  "RoleSClaimWorkerProdExecutionRole": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "events.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Condition": {
+        "Bool": {
+         "aws:MultiFactorAuthPresent": "true"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::238125156143:root"
+          ]
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": "logs:*",
+         "Effect": "Allow",
+         "Resource": "arn:aws:logs:*:*:*"
+        },
+        {
+         "Action": "lambda:InvokeFunction",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "cloudwatch:PutMetricData",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "events:PutEvents",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "ssm:GetParametersByPath",
+         "Effect": "Allow",
+         "Resource": "*"
+        },
+        {
+         "Action": "servicediscovery:DiscoverInstances",
+         "Effect": "Allow",
+         "Resource": "*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "execution-role"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "s3:GetObject*",
+          "s3:ListBucket"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          "arn:aws:s3:::manypets-claims-docs-eu-prod",
+          "arn:aws:s3:::manypets-claims-docs-eu-prod/*"
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "read-objects-in-manypets-claims-docs-eu-prod"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "s3:GetObject*",
+          "s3:ListBucket",
+          "s3:PutObject*",
+          "s3:DeleteObject"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          "arn:aws:s3:::manypets-claims-docs-eu-prod",
+          "arn:aws:s3:::manypets-claims-docs-eu-prod/*"
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "write-objects-in-manypets-claims-docs-eu-prod"
+     }
+    ],
+    "RoleName": "s-claim-worker-prod-execution-role",
+    "Tags": [
+     {
+      "Key": "mp:business-unit",
+      "Value": "boughtbymany/domain-claims"
+     },
+     {
+      "Key": "mp:cloudformation-stack-name",
+      "Value": "code-deploy-s-claim-prod"
+     },
+     {
+      "Key": "mp:name",
+      "Value": "s-claim-prod"
+     },
+     {
+      "Key": "mp:owner",
+      "Value": "domain-claim"
+     },
+     {
+      "Key": "mp:service-role",
+      "Value": "service"
+     },
+     {
+      "Key": "mp:stage",
+      "Value": "prod"
+     }
+    ]
+   }
+  },
+  "sclaimprodSClaimProdSClaimWorkerProdExecutionRoleDefaultPolicyAD0D0596": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "appconfig:GetLatestConfiguration",
+        "appconfig:StartConfigurationSession"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:appconfig:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":application/",
+          {
+           "Ref": "sclaimprodSClaimProdAppConfigAppClaims12278469"
+          },
+          "/environment/*/configuration/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "sclaimprodSClaimProdSClaimWorkerProdExecutionRoleDefaultPolicyAD0D0596",
+    "Roles": [
+     {
+      "Ref": "RoleSClaimWorkerProdExecutionRole"
+     }
+    ]
+   }
+  },
+  "FunctionSClaimWorkerProd": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "forge-artifacts-prod-eu",
+     "S3Key": "service-claim/5d386c85384370ae65a4475def94420c1024b18b/jobs.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "CONFIG_LAMBDA_HANDLER": "jobs.lambda_handler.handler",
+      "POWERTOOLS_SERVICE_NAME": "s-claim-worker",
+      "AWS_APPCONFIG_EXTENSION_PREFETCH_LIST": "/applications/Essential-Prod/environments/default/configurations/default,/applications/claims/environments/default/configurations/default",
+      "CONFIG_LAMBDA_NAMESPACE": "/claim/sClaim",
+      "ENV": "Bought By Many (Prod)"
+     }
+    },
+    "FunctionName": "s-claim-worker-prod",
+    "Handler": "essentials.config_handler",
+    "Layers": [
+     "arn:aws:lambda:eu-west-1:491878816636:layer:config:18",
+     "arn:aws:lambda:eu-west-1:434848589818:layer:AWS-AppConfig-Extension:82"
+    ],
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "RoleSClaimWorkerProdExecutionRole",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": [
+     {
+      "Key": "deploy:code_uri",
+      "Value": "s3://forge-artifacts-prod-eu/service-claim/5d386c85384370ae65a4475def94420c1024b18b/jobs.zip"
+     },
+     {
+      "Key": "deploy:date",
+      "Value": "2024-10-29T11:47:53.904Z"
+     },
+     {
+      "Key": "deploy:source",
+      "Value": "forge-jsii"
+     },
+     {
+      "Key": "mp:business-unit",
+      "Value": "boughtbymany/domain-claims"
+     },
+     {
+      "Key": "mp:cloudformation-stack-name",
+      "Value": "code-deploy-s-claim-prod"
+     },
+     {
+      "Key": "mp:name",
+      "Value": "s-claim-prod"
+     },
+     {
+      "Key": "mp:owner",
+      "Value": "domain-claim"
+     },
+     {
+      "Key": "mp:service-role",
+      "Value": "service"
+     },
+     {
+      "Key": "mp:stage",
+      "Value": "prod"
+     }
+    ],
+    "Timeout": 300
+   }
+  },
+  "EventsRuleSClaimWorkerProdJobsAsyncTaskSchedulerRunRate5Minutes": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "Description": "s-claim-worker-prod-jobs.async_task_scheduler.run",
+    "Name": "s-claim-worker-prod-jobs-async-task-scheduler-run-rat-736e2b2f5f",
+    "ScheduleExpression": "rate(5 minutes)",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "FunctionSClaimWorkerProd",
+        "Arn"
+       ]
+      },
+      "Id": "JobsAsyncTaskSchedulerRun",
+      "Input": "{\"type\":\"trantor-scheduled-event\",\"function_path\":\"jobs.async_task_scheduler.run\"}"
+     }
+    ]
+   }
+  },
+  "EventBridgeEventJobsAsyncTaskSchedulerRunRate5MinutesPermission": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Ref": "FunctionSClaimWorkerProd"
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "EventsRuleSClaimWorkerProdJobsAsyncTaskSchedulerRunRate5Minutes",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "FunctionSClaimWorkerProd"
+   ]
+  },
+  "KeySClaimWorkerProdSettings": {
+   "Type": "AWS::KMS::Key",
+   "Properties": {
+    "EnableKeyRotation": true,
+    "Enabled": true,
+    "KeyPolicy": {
+     "Statement": [
+      {
+       "Action": "kms:*",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::",
+           {
+            "Ref": "AWS::AccountId"
+           },
+           ":root"
+          ]
+         ]
+        }
+       },
+       "Resource": "*",
+       "Sid": "Allow access for root account"
+      },
+      {
+       "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "RoleSClaimWorkerProdExecutionRole",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": "*",
+       "Sid": "Allow use of the key to decrypt variables"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "mp:business-unit",
+      "Value": "boughtbymany/domain-claims"
+     },
+     {
+      "Key": "mp:cloudformation-stack-name",
+      "Value": "code-deploy-s-claim-prod"
+     },
+     {
+      "Key": "mp:name",
+      "Value": "s-claim-prod"
+     },
+     {
+      "Key": "mp:owner",
+      "Value": "domain-claim"
+     },
+     {
+      "Key": "mp:service-role",
+      "Value": "service"
+     },
+     {
+      "Key": "mp:stage",
+      "Value": "prod"
+     }
+    ]
+   },
+   "DependsOn": [
+    "sclaimprodSClaimProdSClaimWorkerProdExecutionRoleDefaultPolicyAD0D0596",
+    "RoleSClaimWorkerProdExecutionRole"
+   ]
+  },
+  "AliasSClaimWorkerProdSettings": {
+   "Type": "AWS::KMS::Alias",
+   "Properties": {
+    "AliasName": "alias/s-claim-worker-prod-settings",
+    "TargetKeyId": {
+     "Ref": "KeySClaimWorkerProdSettings"
+    }
+   },
+   "DependsOn": [
+    "KeySClaimWorkerProdSettings"
+   ]
+  },
+  "ApiSClaimProd": {
+   "Type": "AWS::Serverless::Api",
+   "Properties": {
+    "AccessLogSetting": {
+     "DestinationArn": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:logs:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":",
+        {
+         "Ref": "AWS::AccountId"
+        },
+        ":log-group:/aws/apigateway/access_log"
+       ]
+      ]
+     },
+     "Format": "{\"APIGatewayStage\":\"$context.stage\",\"AWSAccountID\":\"$context.accountId\",\"ApiKeyId\":\"$context.identity.apiKeyId\",\"WafError\":\"$context.waf.error\",\"WafLatency\":\"$context.waf.latency\",\"WafStatus\":\"$context.waf.status\",\"api_id\":\"$context.apiId\",\"api_name\":\"s-claim-prod\",\"authorizeResultStatus\":\"$context.authorize.status\",\"authorizerLatency\":\"$context.authorizer.latency\",\"authorizerRequestId\":\"$context.authorizer.requestId\",\"authorizerServiceStatus\":\"$context.authorizer.status\",\"caller\":\"$context.identity.caller\",\"domainName\":\"$context.domainName\",\"functionResponseStatus\":\"$context.integration.status\",\"httpMethod\":\"$context.httpMethod\",\"integrationLatency\":\"$context.integration.latency\",\"integrationRequestId\":\"$context.integration.requestId\",\"integrationServiceStatus\":\"$context.integration.integrationStatus\",\"ip\":\"$context.identity.sourceIp\",\"path\":\"$context.path\",\"protocol\":\"$context.protocol\",\"requestId\":\"$context.requestId\",\"requestTime\":\"$context.requestTime\",\"resourcePath\":\"$context.resourcePath\",\"responseLatency\":\"$context.responseLatency\",\"responseLength\":\"$context.responseLength\",\"status\":\"$context.status\",\"user\":\"$context.identity.user\",\"user_agent\":\"$context.identity.userAgent\",\"user_id\":\"$context.authorizer.user_uuid\",\"xrayTraceId\":\"$context.xrayTraceId\"}"
+    },
+    "DefinitionBody": {
+     "info": {
+      "title": {
+       "Ref": "ApiLambdaFunction"
+      }
+     },
+     "paths": {
+      "/ping": {
+       "get": {
+        "security": [],
+        "responses": {},
+        "x-amazon-apigateway-integration": {
+         "httpMethod": "POST",
+         "type": "aws_proxy",
+         "uri": {
+          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambdaFunction.Arn}/invocations"
+         }
+        }
+       },
+       "options": {
+        "consumes": [
+         "application/json"
+        ],
+        "produces": [
+         "application/json"
+        ],
+        "responses": {
+         "200": {
+          "headers": {
+           "Access-Control-Allow-Headers": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Methods": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Origin": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "x-amazon-apigateway-integration": {
+         "contentHandling": "CONVERT_TO_TEXT",
+         "requestTemplates": {
+          "application/json": "{\"statusCode\" : 200}"
+         },
+         "responses": {
+          "default": {
+           "responseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Product-Line,X-Api-Version,Api-Version'",
+            "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+           },
+           "responseTemplates": {
+            "application/json": ""
+           },
+           "statusCode": "200"
+          }
+         },
+         "type": "mock"
+        }
+       }
+      },
+      "/swagger.json": {
+       "get": {
+        "security": [],
+        "responses": {},
+        "x-amazon-apigateway-integration": {
+         "httpMethod": "POST",
+         "type": "aws_proxy",
+         "uri": {
+          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambdaFunction.Arn}/invocations"
+         }
+        }
+       },
+       "options": {
+        "consumes": [
+         "application/json"
+        ],
+        "produces": [
+         "application/json"
+        ],
+        "responses": {
+         "200": {
+          "headers": {
+           "Access-Control-Allow-Headers": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Methods": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Origin": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "x-amazon-apigateway-integration": {
+         "contentHandling": "CONVERT_TO_TEXT",
+         "requestTemplates": {
+          "application/json": "{\"statusCode\" : 200}"
+         },
+         "responses": {
+          "default": {
+           "responseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Product-Line,X-Api-Version,Api-Version'",
+            "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+           },
+           "responseTemplates": {
+            "application/json": ""
+           },
+           "statusCode": "200"
+          }
+         },
+         "type": "mock"
+        }
+       }
+      },
+      "/swagger.yaml": {
+       "get": {
+        "security": [],
+        "responses": {},
+        "x-amazon-apigateway-integration": {
+         "httpMethod": "POST",
+         "type": "aws_proxy",
+         "uri": {
+          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambdaFunction.Arn}/invocations"
+         }
+        }
+       },
+       "options": {
+        "consumes": [
+         "application/json"
+        ],
+        "produces": [
+         "application/json"
+        ],
+        "responses": {
+         "200": {
+          "headers": {
+           "Access-Control-Allow-Headers": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Methods": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Origin": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "x-amazon-apigateway-integration": {
+         "contentHandling": "CONVERT_TO_TEXT",
+         "requestTemplates": {
+          "application/json": "{\"statusCode\" : 200}"
+         },
+         "responses": {
+          "default": {
+           "responseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Product-Line,X-Api-Version,Api-Version'",
+            "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+           },
+           "responseTemplates": {
+            "application/json": ""
+           },
+           "statusCode": "200"
+          }
+         },
+         "type": "mock"
+        }
+       }
+      },
+      "/": {
+       "x-amazon-apigateway-any-method": {
+        "security": [
+         {
+          "manual": []
+         }
+        ],
+        "responses": {},
+        "x-amazon-apigateway-integration": {
+         "httpMethod": "POST",
+         "type": "aws_proxy",
+         "uri": {
+          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambdaFunction.Arn}/invocations"
+         }
+        }
+       },
+       "options": {
+        "consumes": [
+         "application/json"
+        ],
+        "produces": [
+         "application/json"
+        ],
+        "responses": {
+         "200": {
+          "headers": {
+           "Access-Control-Allow-Headers": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Methods": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Origin": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "x-amazon-apigateway-integration": {
+         "contentHandling": "CONVERT_TO_TEXT",
+         "requestTemplates": {
+          "application/json": "{\"statusCode\" : 200}"
+         },
+         "responses": {
+          "default": {
+           "responseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Product-Line,X-Api-Version,Api-Version'",
+            "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+           },
+           "responseTemplates": {
+            "application/json": ""
+           },
+           "statusCode": "200"
+          }
+         },
+         "type": "mock"
+        }
+       }
+      },
+      "/{proxy+}": {
+       "x-amazon-apigateway-any-method": {
+        "security": [
+         {
+          "manual": []
+         }
+        ],
+        "responses": {},
+        "x-amazon-apigateway-integration": {
+         "httpMethod": "POST",
+         "type": "aws_proxy",
+         "uri": {
+          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ApiLambdaFunction.Arn}/invocations"
+         }
+        },
+        "parameters": [
+         {
+          "in": "path",
+          "name": "proxy",
+          "required": true,
+          "type": "string"
+         }
+        ]
+       },
+       "options": {
+        "consumes": [
+         "application/json"
+        ],
+        "produces": [
+         "application/json"
+        ],
+        "responses": {
+         "200": {
+          "headers": {
+           "Access-Control-Allow-Headers": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Methods": {
+            "type": "string"
+           },
+           "Access-Control-Allow-Origin": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "x-amazon-apigateway-integration": {
+         "contentHandling": "CONVERT_TO_TEXT",
+         "requestTemplates": {
+          "application/json": "{\"statusCode\" : 200}"
+         },
+         "responses": {
+          "default": {
+           "responseParameters": {
+            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Product-Line,X-Api-Version,Api-Version'",
+            "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
+            "method.response.header.Access-Control-Allow-Origin": "'*'"
+           },
+           "responseTemplates": {
+            "application/json": ""
+           },
+           "statusCode": "200"
+          }
+         },
+         "type": "mock"
+        }
+       }
+      }
+     },
+     "schemes": [
+      "https"
+     ],
+     "securityDefinitions": {
+      "manual": {
+       "in": "header",
+       "name": "Authorization",
+       "type": "apiKey",
+       "x-amazon-apigateway-authorizer": {
+        "authorizerCredentials": {
+         "Fn::ImportValue": "SAuthorizerProdAuthorizerRoleArn"
+        },
+        "authorizerResultTtlInSeconds": 300,
+        "authorizerUri": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:apigateway:",
+           {
+            "Ref": "AWS::Region"
+           },
+           ":lambda:path/2015-03-31/functions/",
+           {
+            "Fn::ImportValue": "SAuthorizerProdAuthorizerLambdaArn"
+           },
+           "/invocations"
+          ]
+         ]
+        },
+        "type": "token"
+       },
+       "x-amazon-apigateway-authtype": "custom"
+      }
+     },
+     "swagger": 2,
+     "x-amazon-apigateway-binary-media-types": [
+      "*/*"
+     ],
+     "x-amazon-apigateway-gateway-responses": {
+      "ACCESS_DENIED": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": \"Access denied by authorizer\",\n    \"title\": \"ACCESS_DENIED_BY_AUTHORIZER\",\n    \"status\": 403\n}\n"
+       },
+       "statusCode": 403
+      },
+      "API_CONFIGURATION_ERROR": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"API_CONFIGURATION_ERROR\",\n    \"status\": 500\n}\n"
+       },
+       "statusCode": 500
+      },
+      "AUTHORIZER_CONFIGURATION_ERROR": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"AUTHORIZER_CONFIGURATION_ERROR\",\n    \"status\": 500\n}\n"
+       },
+       "statusCode": 500
+      },
+      "AUTHORIZER_FAILURE": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"AUTHORIZER_FAILURE\",\n    \"status\": 500\n}\n"
+       },
+       "statusCode": 500
+      },
+      "BAD_REQUEST_BODY": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"BAD_REQUEST_BODY\",\n    \"status\": 400\n}\n"
+       },
+       "statusCode": 400
+      },
+      "BAD_REQUEST_PARAMETERS": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"BAD_REQUEST_PARAMETERS\",\n    \"status\": 400\n}\n"
+       },
+       "statusCode": 400
+      },
+      "DEFAULT_4XX": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"Client Error\"\n}\n"
+       }
+      },
+      "DEFAULT_5XX": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"Server Error\"\n}\n"
+       }
+      },
+      "EXPIRED_TOKEN": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"EXPIRED_TOKEN\",\n    \"status\": 403\n}\n"
+       },
+       "statusCode": 403
+      },
+      "INTEGRATION_FAILURE": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"INTEGRATION_FAILURE\",\n    \"status\": 504\n}\n"
+       },
+       "statusCode": 504
+      },
+      "INTEGRATION_TIMEOUT": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"INTEGRATION_TIMEOUT\",\n    \"status\": 504\n}\n"
+       },
+       "statusCode": 504
+      },
+      "INVALID_API_KEY": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"INVALID_API_KEY\",\n    \"status\": 403\n}\n"
+       },
+       "statusCode": 403
+      },
+      "INVALID_SIGNATURE": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"INVALID_SIGNATURE\",\n    \"status\": 403\n}\n"
+       },
+       "statusCode": 403
+      },
+      "MISSING_AUTHENTICATION_TOKEN": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"MISSING_AUTHENTICATION_TOKEN\",\n    \"status\": 403\n}\n"
+       },
+       "statusCode": 403
+      },
+      "QUOTA_EXCEEDED": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"QUOTA_EXCEEDED\",\n    \"status\": 429\n}\n"
+       },
+       "statusCode": 429
+      },
+      "REQUEST_TOO_LARGE": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"REQUEST_TOO_LARGE\",\n    \"status\": 413\n}\n"
+       },
+       "statusCode": 413
+      },
+      "RESOURCE_NOT_FOUND": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"RESOURCE_NOT_FOUND\",\n    \"status\": 404\n}\n"
+       },
+       "statusCode": 404
+      },
+      "THROTTLED": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"THROTTLED\",\n    \"status\": 429\n}\n"
+       },
+       "statusCode": 429
+      },
+      "UNAUTHORIZED": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"UNAUTHORIZED\",\n    \"status\": 401\n}\n"
+       },
+       "statusCode": 401
+      },
+      "UNSUPPORTED_MEDIA_TYPE": {
+       "responseParameters": {
+        "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Methods": "'*'",
+        "gatewayresponse.header.Access-Control-Allow-Origin": "'*'"
+       },
+       "responseTemplates": {
+        "application/json": "\n{\n    \"detail\": $context.error.messageString,\n    \"title\": \"UNSUPPORTED_MEDIA_TYPE\",\n    \"status\": 415\n}\n"
+       },
+       "statusCode": 415
+      }
+     }
+    },
+    "MethodSettings": [
+     {
+      "CachingEnabled": false,
+      "DataTraceEnabled": true,
+      "HttpMethod": "*",
+      "LoggingLevel": "INFO",
+      "MetricsEnabled": true,
+      "ResourcePath": "/*"
+     }
+    ],
+    "StageName": "apistage",
+    "Tags": {
+     "mp:business-unit": "boughtbymany/domain-claims",
+     "mp:cloudformation-stack-name": "code-deploy-s-claim-prod",
+     "mp:name": "s-claim-prod",
+     "mp:owner": "domain-claim",
+     "mp:service-role": "service",
+     "mp:stage": "prod"
+    },
+    "TracingEnabled": true
+   }
+  },
+  "ApiGatewayInvokePermissionApiSClaimProd": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Ref": "ApiLambdaFunction"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "ApiSClaimProd"
+       },
+       "/apistage/*"
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "ApiSClaimProd"
+   ]
+  },
+  "sclaimprodSClaimProdAppConfigAppClaims12278469": {
+   "Type": "AWS::AppConfig::Application",
+   "Properties": {
+    "Name": "claims"
+   }
+  },
+  "sclaimprodSClaimProdAppConfigAppClaimsAppconfigConfigEnvClaimsDefault606ED94C": {
+   "Type": "AWS::AppConfig::Environment",
+   "Properties": {
+    "ApplicationId": {
+     "Ref": "sclaimprodSClaimProdAppConfigAppClaims12278469"
+    },
+    "Name": "default"
+   }
+  },
+  "sclaimprodSClaimProdAppConfigAppClaimsAppconfigConfigProfileClaimsDefault5C1796B9": {
+   "Type": "AWS::AppConfig::ConfigurationProfile",
+   "Properties": {
+    "ApplicationId": {
+     "Ref": "sclaimprodSClaimProdAppConfigAppClaims12278469"
+    },
+    "LocationUri": "hosted",
+    "Name": "default"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWPwW7DIBBEvyV3TBL31KNlpZcearkfUBG8jjaGBbHgqLL49wgSn2ZHbzSjbeX5/CFPB/XgRk9LY/Aqt9+o9CJGYJeCBqEe/LehsnIbnQHRz1R1cAb1f7GvKwsumX6mr0Q6oqPCOo9ZGGWvk6psgGCR+U33ZBaLZbl9Q+17S2dQcRawAkWWZTYZEMp77WjGW63rvDeo1b52oRWDIwsUi+1rMIXKh+BmNJBzIT8p+lQz+5tZkJtA3vm4tq38lKfDnRGbkCiiBTm+9Am5fwlTMAEAAA=="
+   }
+  }
+ },
+ "Outputs": {
+  "OutputRoleSClaimProdExecutionRoleArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "RoleSClaimProdExecutionRole",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "OutputRoleSClaimProdExecutionRoleArn"
+   }
+  },
+  "OutputSClaimProdLambdaArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApiLambdaFunction",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "OutputSClaimProdLambdaArn"
+   }
+  },
+  "OutputAliasSClaimProdSettings": {
+   "Value": {
+    "Ref": "AliasSClaimProdSettings"
+   }
+  },
+  "OutputRoleSClaimOrgEventBridgeProdExecutionRoleArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "RoleSClaimOrgEventBridgeProdExecutionRole",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "OutputRoleSClaimOrgEventBridgeProdExecutionRoleArn"
+   }
+  },
+  "SClaimOrgEventBridgeProdLambdaArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "FunctionSClaimOrgEventBridgeProd",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "SClaimOrgEventBridgeProdLambdaArn"
+   }
+  },
+  "OutputAliasSClaimOrgEventBridgeProdSettings": {
+   "Value": {
+    "Ref": "AliasSClaimOrgEventBridgeProdSettings"
+   }
+  },
+  "OutputRoleSClaimWorkerProdExecutionRoleArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "RoleSClaimWorkerProdExecutionRole",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "OutputRoleSClaimWorkerProdExecutionRoleArn"
+   }
+  },
+  "SClaimWorkerProdLambdaArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "FunctionSClaimWorkerProd",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "SClaimWorkerProdLambdaArn"
+   }
+  },
+  "OutputAliasSClaimWorkerProdSettings": {
+   "Value": {
+    "Ref": "AliasSClaimWorkerProdSettings"
+   }
+  },
+  "OutputApiIdSClaimProd": {
+   "Value": {
+    "Ref": "ApiSClaimProd"
+   },
+   "Export": {
+    "Name": "ApiIdSClaimProd"
+   }
+  },
+  "OutputApiUrlSClaimProd": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "ApiSClaimProd"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".amazonaws.com/apistage"
+     ]
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
