@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.priceline</groupId>
+	<artifactId>hse</artifactId>
+	<version>3.1.101-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>hse-jar</module>
+		<module>hse-exec</module>
+	</modules>
+
+	<name>Hotel Search Engine</name>
+	<description>Priceline Hotel Search Engine</description>
+
+	<parent>
+		<artifactId>pcln-spring-parent</artifactId>
+		<groupId>com.priceline</groupId>
+		<version>23.33-r1-java8</version>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<infra.version>15.0.69</infra.version>
+		<novus.version>7.0.230</novus.version>
+		<tomcat.version>9.0.35</tomcat.version>
+		<logback.version>1.2.7</logback.version>
+		<netty-codec.version>4.1.68.Final</netty-codec.version>
+		<google-oauth-client.version>1.33.3</google-oauth-client.version>
+		<kafka.version>3.4.0</kafka.version>
+		<library.spring-boot.version>2.7.11</library.spring-boot.version>
+		<skip.unit.tests>false</skip.unit.tests>
+		<commons.compress.version>1.26.0</commons.compress.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${library.spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-codec</artifactId>
+				<version>${netty-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-codec-http</artifactId>
+				<version>${netty-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.rabbitmq</groupId>
+				<artifactId>amqp-client</artifactId>
+				<version>4.0.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.oauth-client</groupId>
+				<artifactId>google-oauth-client</artifactId>
+				<version>${google-oauth-client.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<!--suppress UnresolvedMavenProperty -->
+			<url>${pcln.releases.url}</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<!--suppress UnresolvedMavenProperty -->
+			<url>${pcln.snapshots.url}</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
+	<scm>
+		<connection>scm:git:ssh://git@github.com/pcln/hse.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/pcln/hse.git</developerConnection>
+		<tag>hse-3.1.97</tag>
+	</scm>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.21.0</version>
+				<configuration>
+					<!-- Skips unit tests if the value of skip.unit.tests property is true -->
+					<skipTests>${skip.unit.tests}</skipTests>
+					<!-- Test patterns to cover-->
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/*Spec.java</include>
+					</includes>
+					<!-- Excludes integration tests when unit tests are run -->
+					<excludes>
+						<exclude>**/*IT.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
